@@ -1,7 +1,11 @@
 // Exemplo de comando
+
+// Define a command class
 import 'package:cmdr/cmdr.dart';
 
-class CreateUserCommand extends Command<int> {
+class CreateUserCommand extends Command {
   final String username;
-  CreateUserCommand(this.username);
+  final String email;
+
+  CreateUserCommand(this.username, this.email);
 }
