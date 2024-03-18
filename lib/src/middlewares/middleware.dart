@@ -18,15 +18,15 @@ class CommandQueryProcessor {
   Future<void> executeCommand<TCommand extends Command>(
       TCommand command) async {
     await _middleware.handleCommand<TCommand>(command, () async {
-      // Executa o comando
+      // Execute the command
     });
   }
 
   Future<TResult> executeQuery<TQuery extends Query, TResult>(
       TQuery query) async {
     return await _middleware.handleQuery<TQuery, TResult>(query, () async {
-      // Executa a consulta e retorna o resultado
-      return null; // Substitua null pelo resultado real da consulta
+      // Execute the query and return the result
+      return null; // Replace null with the actual result of the query
     });
   }
 }

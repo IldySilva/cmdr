@@ -2,8 +2,6 @@ import 'dart:async';
 
 class Mediator {
   final Map<Type, dynamic> _handlers = {};
-
-  // Implementação do singleton
   static final Mediator _instance = Mediator._internal();
   factory Mediator() => _instance;
   Mediator._internal();
@@ -35,7 +33,6 @@ class Mediator {
         var result = await handler.handle(request);
         yield result;
       } catch (e) {
-        // Trate os erros aqui, talvez emitindo um evento de erro
         print('Error handling request: $e');
       }
     }
