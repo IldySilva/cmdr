@@ -1,7 +1,16 @@
 name: cmdr
-description: A starting point for Dart libraries or applications.
+description: Dart package that provides a lightweight implementation of the Mediator pattern tailored for Command Query Responsibility Segregation (CQRS) applications.
+
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+homepage: https://github.com/IldySilva/cmdr
+repository: https://github.com/IldySilva/cmdr.git
+issue_tracker: https://github.com/IldySilva/cmdr/issues
+
+topics:
+  - Command Query Responability Segregator ( CQRS)
+  - Mediator Pattern
+  - Mediatr
+
 
 environment:
   sdk: ^3.3.0
