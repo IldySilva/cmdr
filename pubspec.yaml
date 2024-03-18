@@ -7,9 +7,12 @@ repository: https://github.com/IldySilva/cmdr.git
 issue_tracker: https://github.com/IldySilva/cmdr/issues
 
 topics:
-  - Command Query Responability Segregator ( CQRS)
+  - CQRS
   - Mediator Pattern
   - Mediatr
+  - Command
+  - Query
+  
 
 
 environment:
