@@ -37,13 +37,13 @@ var mediator = Mediator();
 
 ### Registering Handlers
 ```dart
-class MyCommandHandler {
+class MyCommandHandler CommandHandler<MyQuery,dynamic>  {
   Future<void> handle(MyCommand command) async {
     // Command handling logic
   }
 }
 
-class MyQueryHandler {
+class MyQueryHandler extends QueryHandler<MyQuery,dynamic> {
   Future<Result> handle(MyQuery query) async {
     // Query handling logic
   }
