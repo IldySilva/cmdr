@@ -1,3 +1,4 @@
+import 'package:cmdr/cmdr.dart';
 import 'package:cmdr/src/piplines_types.dart';
 
 class Mediator {
@@ -62,10 +63,12 @@ class Mediator {
     }
   }
 
-  Stream<dynamic> sendStream(Stream<dynamic> requestStream) async* {
+  Stream<TResult> sendStream<TQuery extends Query<TResult>, TResult>(
+      Stream<TQuery> requestStream) async* {
     await for (var request in requestStream) {
       try {
         var handler = _handlers[request.runtimeType];
+
         if (handler == null) {
           throw Exception('No handler registered for ${request.runtimeType}.');
         }
@@ -73,12 +76,14 @@ class Mediator {
         // Execute pre-processors
         await _executePreProcessors(request);
 
-        var result = await handler.handle(request);
+        // Execute the handler's method, which should return a Future or Stream
+        var result =
+            await (handler as QueryHandler<TQuery, TResult>).handle(request);
 
         // Execute post-processors
         await _executePostProcessors(request, result);
 
-        yield result;
+        yield result; // Yield the result to the stream
       } catch (e) {
         print('Error handling request: $e');
       }
