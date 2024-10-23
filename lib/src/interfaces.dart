@@ -12,6 +12,8 @@ abstract class QueryHandler<TQuery extends Query, TResult> {
   FutureOr<TResult> handle(TQuery query);
 }
 
-abstract class StreamQueryHandler<TQuery extends Query, TResult> {
-  Stream<TResult> handle(TQuery query); // For Stream-based queries
+abstract class StreamQuery<TResult> {}
+
+abstract class StreamQueryHandler<TQuery extends Query<TResult>, TResult> {
+  Stream<TResult> handle(TQuery query);
 }

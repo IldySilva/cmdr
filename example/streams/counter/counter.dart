@@ -1,35 +1,67 @@
-import 'dart:async';
-
+// Example Command and Command Handler
 import 'package:cmdr/cmdr.dart';
 
-class NumberQuery extends Query<int> {
+class AddCommand extends Command<int> {
+  final int a;
+  final int b;
+
+  AddCommand(this.a, this.b);
+}
+
+class AddCommandHandler extends CommandHandler<AddCommand, int> {
+  @override
+  Future<int> handle(AddCommand command) async {
+    return command.a + command.b;
+  }
+}
+
+// Example Query and Query Handler
+class GetTimeQuery extends Query<DateTime> {}
+
+class GetTimeQueryHandler extends QueryHandler<GetTimeQuery, DateTime> {
+  @override
+  Future<DateTime> handle(GetTimeQuery query) async {
+    return DateTime.now();
+  }
+}
+
+// Example Stream Query Handler
+class NumberStreamQuery extends Query<int> {
   final int number;
 
-  NumberQuery(this.number);
+  NumberStreamQuery(this.number);
 }
 
-class NumberQueryHandler extends QueryHandler<NumberQuery, int> {
+class NumberStreamQueryHandler
+    extends StreamQueryHandler<NumberStreamQuery, int> {
   @override
-  Future<int> handle(NumberQuery query) async {
-    return query.number * 2;
+  Stream<int> handle(NumberStreamQuery query) async* {
+    yield query.number * 2; // Doubling the number
   }
 }
 
+// Main function
 void main() async {
-  // Criação do Mediator e registro do manipulador
   final mediator = Mediator();
-  mediator.registerHandler(NumberQuery, NumberQueryHandler());
 
-  // Criando um Stream de números
-  Stream<NumberQuery> numberStream = Stream.fromIterable([
-    NumberQuery(1),
-    NumberQuery(2),
-    NumberQuery(3),
-    NumberQuery(4),
+  // Register handlers
+  mediator.registerHandler(AddCommand, AddCommandHandler());
+  mediator.registerHandler(GetTimeQuery, GetTimeQueryHandler());
+  mediator.registerHandler(NumberStreamQuery, NumberStreamQueryHandler());
+
+  // Using the Mediator for a command
+  final result = await mediator.send(AddCommand(5, 3));
+  print('Add Command Result: $result'); // Output: Add Command Result: 8
+
+  // Using the Mediator for a query
+  final timeResult = await mediator.send<int>(GetTimeQuery());
+  print('Current Time: $timeResult');
+
+  // Using the Mediator for a stream query
+  final numberStream = Stream.fromIterable([
+    NumberStreamQuery(1),
+    NumberStreamQuery(2),
+    NumberStreamQuery(3),
   ]);
-
-  // Usando o sendStream para processar a consulta de números
-  await for (var result in mediator.sendStream(numberStream)) {
-    print('Processed result: $result'); // Imprimindo os resultados processados
-  }
+  mediator.sendStreamQuery(numberStream).listen((V) => print(V));
 }

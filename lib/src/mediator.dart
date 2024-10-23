@@ -23,7 +23,7 @@ class Mediator {
     _postProcessors.putIfAbsent(type, () => []).add(postProcessor);
   }
 
-  Future<dynamic> send(dynamic request) async {
+  Future<T> send<T>(dynamic request) async {
     var handler = _handlers[request.runtimeType];
     if (handler == null) {
       throw Exception('No handler registered for ${request.runtimeType}.');
@@ -42,7 +42,7 @@ class Mediator {
     // Execute post-processors
     await _executePostProcessors(request, result);
 
-    return result;
+    return result as T;
   }
 
   Future<void> _executePreProcessors(dynamic request) async {
@@ -63,30 +63,15 @@ class Mediator {
     }
   }
 
-  Stream<TResult> sendStream<TQuery extends Query<TResult>, TResult>(
-      Stream<TQuery> requestStream) async* {
-    await for (var request in requestStream) {
-      try {
-        var handler = _handlers[request.runtimeType];
-
-        if (handler == null) {
-          throw Exception('No handler registered for ${request.runtimeType}.');
-        }
-
-        // Execute pre-processors
-        await _executePreProcessors(request);
-
-        // Execute the handler's method, which should return a Future or Stream
-        var result =
-            await (handler as QueryHandler<TQuery, TResult>).handle(request);
-
-        // Execute post-processors
-        await _executePostProcessors(request, result);
-
-        yield result; // Yield the result to the stream
-      } catch (e) {
-        print('Error handling request: $e');
+  Stream<TResult> sendStreamQuery<TResult>(
+      Stream<Query<TResult>> requestStream) async* {
+    await for (var query in requestStream) {
+      var handler = _handlers[query.runtimeType];
+      if (handler == null) {
+        throw Exception('No handler registered for ${query.runtimeType}.');
       }
+      yield await handler
+          .handle(query); // Await the result of the query handler
     }
   }
 }
